@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>webrtc data channel</title>
+</head>
+<body>
+<form action="">
+    <input type="file"/>
+</form>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/rtc-shim.js"></script>
+<script>
+    (function () {
+        var rtcShim = new RtcShim();
+        var chunkLength = 1000;
+        var filename;
+
+        document.querySelector('input[type=file]').onchange = function () {
+            var file = this.files[0];
+            var reader = new window.FileReader();
+            filename = file.name;
+            reader.readAsDataURL(file);
+            reader.onload = onReadAsDataURL;
+        };
+
+        function onReadAsDataURL (event, text) {
+            var data = {};
+            if (event) text = event.target.result;
+            if (text.length > chunkLength) {
+                data.message = text.slice(0, chunkLength);
+            } else {
+                data.message = text;
+                data.last = true;
+            }
+
+            data.filename = filename;
+
+            rtcShim.getChannel().send(JSON.stringify(data));
+
+            var remainingDataURL = text.slice(data.message.length);
+            if (remainingDataURL.length) setTimeout(function () {
+                onReadAsDataURL(null, remainingDataURL);
+            }, 1)
+        }
+
+    })();
+</script>
+</body>
+</html>
