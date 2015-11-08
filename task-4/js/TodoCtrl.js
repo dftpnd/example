@@ -6,7 +6,6 @@ var TodoCtrl = function (Todo) {
     var $todoForm = $('#todoForm');
 
 
-
     /**
      *
      * @param todo
@@ -15,9 +14,10 @@ var TodoCtrl = function (Todo) {
     function buildItemtemplate(item) {
         var html =
             '<li>' +
-            'title:' + item.title +
-            'date:' + item.date +
-            'author:' + item.author +
+            '<a href="#" class="todo-app__remove_link">' + 'Удалить' + '</a>' +
+            '<span class="todo-app__title">' + item.title + '</span>' +
+            '<span class="todo-app__author">' + item.author + '</span>' +
+            '<span class="todo-app__date">' + item.date + '</span>' +
             '</li>';
         return html;
     };
